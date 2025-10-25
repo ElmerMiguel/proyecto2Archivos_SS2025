@@ -58,34 +58,34 @@ INSERT INTO tipos_notificacion (nombre_tipo) VALUES
 
 -- 1 Administrador
 INSERT INTO usuarios (id_rol, nombre_completo, email, password_hash, telefono, direccion) VALUES
-(4, 'Carlos Méndez Administrador', 'admin@ecommercegt.com', '$2a$10$HASH_ADMIN_PASSWORD', '50221234567', 'Zona 10, Ciudad de Guatemala');
+(4, 'Carlos Méndez Administrador', 'admin@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234567', 'Zona 10, Ciudad de Guatemala');
 
 -- 5 Moderadores
 INSERT INTO usuarios (id_rol, nombre_completo, email, password_hash, telefono, direccion) VALUES
-(2, 'María González Moderadora', 'moderador1@ecommercegt.com', '$2a$10$HASH_MOD1_PASSWORD', '50221234568', 'Zona 1, Ciudad de Guatemala'),
-(2, 'José Ramírez Moderador', 'moderador2@ecommercegt.com', '$2a$10$HASH_MOD2_PASSWORD', '50221234569', 'Antigua Guatemala'),
-(2, 'Ana López Moderadora', 'moderador3@ecommercegt.com', '$2a$10$HASH_MOD3_PASSWORD', '50221234570', 'Quetzaltenango'),
-(2, 'Pedro Castillo Moderador', 'moderador4@ecommercegt.com', '$2a$10$HASH_MOD4_PASSWORD', '50221234571', 'Escuintla'),
-(2, 'Laura Fernández Moderadora', 'moderador5@ecommercegt.com', '$2a$10$HASH_MOD5_PASSWORD', '50221234572', 'Zona 15, Ciudad de Guatemala');
+(2, 'María González Moderadora', 'moderador1@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234568', 'Zona 1, Ciudad de Guatemala'),
+(2, 'José Ramírez Moderador', 'moderador2@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234569', 'Antigua Guatemala'),
+(2, 'Ana López Moderadora', 'moderador3@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234570', 'Quetzaltenango'),
+(2, 'Pedro Castillo Moderador', 'moderador4@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234571', 'Escuintla'),
+(2, 'Laura Fernández Moderadora', 'moderador5@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234572', 'Zona 15, Ciudad de Guatemala');
 
 -- 3 Usuarios de Logística
 INSERT INTO usuarios (id_rol, nombre_completo, email, password_hash, telefono, direccion) VALUES
-(3, 'Roberto Morales Logística', 'logistica1@ecommercegt.com', '$2a$10$HASH_LOG1_PASSWORD', '50221234573', 'Villa Nueva'),
-(3, 'Carmen Díaz Logística', 'logistica2@ecommercegt.com', '$2a$10$HASH_LOG2_PASSWORD', '50221234574', 'Mixco'),
-(3, 'Luis Torres Logística', 'logistica3@ecommercegt.com', '$2a$10$HASH_LOG3_PASSWORD', '50221234575', 'San Miguel Petapa');
+(3, 'Roberto Morales Logística', 'logistica1@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234573', 'Villa Nueva'),
+(3, 'Carmen Díaz Logística', 'logistica2@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234574', 'Mixco'),
+(3, 'Luis Torres Logística', 'logistica3@ecommercegt.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '21234575', 'San Miguel Petapa');
 
 -- 10 Usuarios Comunes
 INSERT INTO usuarios (id_rol, nombre_completo, email, password_hash, telefono, direccion) VALUES
-(1, 'Andrea Jiménez García', 'andrea.jimenez@gmail.com', '$2a$10$HASH_USER1_PASSWORD', '50231234567', 'Zona 11, Ciudad de Guatemala'),
-(1, 'Fernando Silva Martínez', 'fernando.silva@gmail.com', '$2a$10$HASH_USER2_PASSWORD', '50231234568', 'Zona 13, Ciudad de Guatemala'),
-(1, 'Gabriela Ortiz Cruz', 'gabriela.ortiz@gmail.com', '$2a$10$HASH_USER3_PASSWORD', '50231234569', 'Zona 7, Ciudad de Guatemala'),
-(1, 'Ricardo Vásquez León', 'ricardo.vasquez@gmail.com', '$2a$10$HASH_USER4_PASSWORD', '50231234570', 'Zona 4, Ciudad de Guatemala'),
-(1, 'Sofía Herrera Pérez', 'sofia.herrera@gmail.com', '$2a$10$HASH_USER5_PASSWORD', '50231234571', 'Zona 14, Ciudad de Guatemala'),
-(1, 'Diego Moreno Rojas', 'diego.moreno@gmail.com', '$2a$10$HASH_USER6_PASSWORD', '50231234572', 'Zona 3, Ciudad de Guatemala'),
-(1, 'Valentina Castro Mejía', 'valentina.castro@gmail.com', '$2a$10$HASH_USER7_PASSWORD', '50231234573', 'Zona 16, Ciudad de Guatemala'),
-(1, 'Andrés Guzmán Flores', 'andres.guzman@gmail.com', '$2a$10$HASH_USER8_PASSWORD', '50231234574', 'Zona 5, Ciudad de Guatemala'),
-(1, 'Isabella Mendoza Vargas', 'isabella.mendoza@gmail.com', '$2a$10$HASH_USER9_PASSWORD', '50231234575', 'Zona 12, Ciudad de Guatemala'),
-(1, 'Sebastián Rivas Aguilar', 'sebastian.rivas@gmail.com', '$2a$10$HASH_USER10_PASSWORD', '50231234576', 'Zona 9, Ciudad de Guatemala');
+(1, 'Andrea Jiménez García', 'andrea.jimenez@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234567', 'Zona 11, Ciudad de Guatemala'),
+(1, 'Fernando Silva Martínez', 'fernando.silva@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234568', 'Zona 13, Ciudad de Guatemala'),
+(1, 'Gabriela Ortiz Cruz', 'gabriela.ortiz@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234569', 'Zona 7, Ciudad de Guatemala'),
+(1, 'Ricardo Vásquez León', 'ricardo.vasquez@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234570', 'Zona 4, Ciudad de Guatemala'),
+(1, 'Sofía Herrera Pérez', 'sofia.herrera@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234571', 'Zona 14, Ciudad de Guatemala'),
+(1, 'Diego Moreno Rojas', 'diego.moreno@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234572', 'Zona 3, Ciudad de Guatemala'),
+(1, 'Valentina Castro Mejía', 'valentina.castro@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234573', 'Zona 16, Ciudad de Guatemala'),
+(1, 'Andrés Guzmán Flores', 'andres.guzman@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234574', 'Zona 5, Ciudad de Guatemala'),
+(1, 'Isabella Mendoza Vargas', 'isabella.mendoza@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234575', 'Zona 12, Ciudad de Guatemala'),
+(1, 'Sebastián Rivas Aguilar', 'sebastian.rivas@gmail.com', '$2a$10$S4vup6.0L7uehjPO57NSrubejprulB1MIXjJ0n0ac6coxKBirHzLK', '31234576', 'Zona 9, Ciudad de Guatemala');
 
 -- =====================================================
 -- 3. INSERCIÓN DE SOLICITUDES DE PRODUCTOS

@@ -90,7 +90,7 @@ CREATE TABLE usuarios (
     nombre_completo VARCHAR(200) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    telefono VARCHAR(20),
+    telefono VARCHAR(8),
     direccion TEXT,
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
