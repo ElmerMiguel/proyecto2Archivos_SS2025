@@ -1,20 +1,22 @@
 package com.archivos.ecommerce.service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.io.Decoders;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
 
     // Se recomienda usar una clave secreta base64 más larga y fija (no regenerarla cada vez)
     // generar secret key base 64 en termina: "openssl rand -base64 64"
-    private static final String SECRET_KEY = "bXlfdmVyeV9zZWNyZXRfa2V5X3N1cGVyX3NlY3JldF9rZXlfMTIzNDU2Nzg5MA==";
+    private static final String SECRET_KEY = "GvBZd5mqCdcWc4Tq/63Qu9uYxsDZAyJ1pDyzBm0+50QmmrsOTmtGstB2hSNAGzG2tAevQP4vDReYNrDo2ATrIA==";
     private final SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
 
     private final long expiration = 86400000; // 24 horas
