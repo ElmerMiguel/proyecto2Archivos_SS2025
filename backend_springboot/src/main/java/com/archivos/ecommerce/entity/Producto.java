@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "productos")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,10 +42,12 @@ public class Producto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vendedor", nullable = false)
+    @JsonIgnoreProperties({"productos", "pedidos", "sanciones"})
     private Usuario vendedor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_solicitud")
+    @JsonIgnoreProperties({"productos"})
     private SolicitudProducto solicitud;
 
     @ManyToOne(fetch = FetchType.LAZY)
