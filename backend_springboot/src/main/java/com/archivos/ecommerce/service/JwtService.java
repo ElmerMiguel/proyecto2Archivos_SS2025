@@ -14,7 +14,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    // Se recomienda usar una clave secreta base64 más larga y fija (no regenerarla cada vez)
+    // Se recomienda usar una clave secreta base64 larga y fija (no regenerarla cada vez)
     // generar secret key base 64 en termina: "openssl rand -base64 64"
     private static final String SECRET_KEY = "GvBZd5mqCdcWc4Tq/63Qu9uYxsDZAyJ1pDyzBm0+50QmmrsOTmtGstB2hSNAGzG2tAevQP4vDReYNrDo2ATrIA==";
     private final SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
