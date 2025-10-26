@@ -2,6 +2,7 @@ package com.archivos.ecommerce.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,6 +16,9 @@ public class ItemCarrito {
 
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
+
+    @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioUnitario;
 
     @Column(name = "fecha_agregado", nullable = false)
     private LocalDateTime fechaAgregado;
