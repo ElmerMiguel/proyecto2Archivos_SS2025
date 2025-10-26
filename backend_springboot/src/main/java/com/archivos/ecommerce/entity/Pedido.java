@@ -42,7 +42,5 @@ public class Pedido {
     @JoinColumn(name = "id_estado_pedido", nullable = false)
     private EstadoPedido estadoPedido;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario_logistica")
-    private Usuario usuarioLogistica;
+   
 }

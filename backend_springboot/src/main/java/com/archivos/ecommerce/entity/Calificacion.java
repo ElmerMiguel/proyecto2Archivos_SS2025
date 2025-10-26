@@ -29,4 +29,8 @@ public class Calificacion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_pedido", nullable = false)
+    private Pedido pedido;
 }

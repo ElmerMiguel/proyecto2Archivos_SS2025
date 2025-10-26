@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface CalificacionRepository extends JpaRepository<Calificacion, Integer> {
     List<Calificacion> findByProducto_IdProducto(Integer idProducto);
+    boolean existsByUsuario_IdUsuarioAndPedido_IdPedidoAndProducto_IdProducto(Integer idUsuario, Integer idPedido, Integer idProducto);
+    List<Calificacion> findByUsuario_IdUsuario(Integer idUsuario);
 }
