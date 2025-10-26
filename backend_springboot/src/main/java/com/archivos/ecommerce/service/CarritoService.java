@@ -12,12 +12,14 @@ import com.archivos.ecommerce.repository.ProductoRepository;
 import com.archivos.ecommerce.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 public class CarritoService {
@@ -34,13 +36,11 @@ public class CarritoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Obtener carrito por usuario
     public Optional<CarritoDTO> obtenerCarritoPorUsuario(Integer idUsuario) {
         return carritoRepository.findByUsuario_IdUsuario(idUsuario)
                 .map(this::convertirADTO);
     }
 
-    // Obtener ítems del carrito
     public List<ItemCarritoDTO> obtenerItemsDelCarrito(Integer idCarrito) {
         return itemCarritoRepository.findByCarrito_IdCarrito(idCarrito)
                 .stream()
@@ -48,7 +48,6 @@ public class CarritoService {
                 .collect(Collectors.toList());
     }
 
-    // Agregar producto al carrito
     public ItemCarritoDTO agregarProductoAlCarrito(Integer idUsuario, Integer idProducto, Integer cantidad) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -91,7 +90,6 @@ public class CarritoService {
         return convertirItemADTO(itemGuardado);
     }
 
-    // Actualizar cantidad de un item
     public ItemCarritoDTO actualizarCantidadItem(Integer idItem, Integer nuevaCantidad) {
         ItemCarrito item = itemCarritoRepository.findById(idItem)
                 .orElseThrow(() -> new RuntimeException("Item no encontrado"));
@@ -106,7 +104,6 @@ public class CarritoService {
         return convertirItemADTO(itemActualizado);
     }
 
-    // Eliminar ítem del carrito
     public void eliminarItemDelCarrito(Integer idItem) {
         ItemCarrito item = itemCarritoRepository.findById(idItem)
                 .orElseThrow(() -> new RuntimeException("Item no encontrado"));
@@ -118,7 +115,6 @@ public class CarritoService {
         carritoRepository.save(carrito);
     }
 
-    // Convertir Carrito a DTO
     private CarritoDTO convertirADTO(Carrito carrito) {
         List<ItemCarritoDTO> items = obtenerItemsDelCarrito(carrito.getIdCarrito());
 
@@ -131,7 +127,6 @@ public class CarritoService {
                 items);
     }
 
-    // Convertir ItemCarrito a DTO
     private ItemCarritoDTO convertirItemADTO(ItemCarrito item) {
         BigDecimal subtotal = item.getProducto().getPrecio()
                 .multiply(BigDecimal.valueOf(item.getCantidad()));
@@ -145,4 +140,16 @@ public class CarritoService {
                 item.getProducto().getPrecio(),
                 subtotal);
     }
+
+@Transactional 
+public void limpiarCarrito(Integer idUsuario) {
+    Optional<Carrito> carrito = carritoRepository.findByUsuario_IdUsuario(idUsuario);
+    if (carrito.isPresent()) {
+        itemCarritoRepository.deleteByCarrito_IdCarrito(carrito.get().getIdCarrito());
+        carrito.get().setFechaUltimaActualizacion(LocalDateTime.now());
+        carritoRepository.save(carrito.get());
+    }
+}
+
+
 }

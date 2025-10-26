@@ -15,4 +15,7 @@ public interface ItemCarritoRepository extends JpaRepository<ItemCarrito, Intege
 
     // Buscar un item específico por carrito y producto
     Optional<ItemCarrito> findByCarrito_IdCarritoAndProducto_IdProducto(Integer idCarrito, Integer idProducto);
+
+    void deleteByCarrito_IdCarrito(Integer idCarrito);
+
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "pedidos")
@@ -20,8 +21,11 @@ public class Pedido {
     @Column(name = "total", nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
-    @Column(name = "fecha_entrega")
-    private LocalDateTime fechaEntrega;
+    @Column(name = "fecha_entrega_estimada", nullable = false)
+    private LocalDate fechaEntregaEstimada;
+
+    @Column(name = "fecha_entrega_real")
+    private LocalDateTime fechaEntregaReal; 
 
     @Column(name = "direccion_entrega", nullable = false)
     private String direccionEntrega;

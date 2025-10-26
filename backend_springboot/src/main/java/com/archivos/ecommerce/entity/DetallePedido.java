@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 public class DetallePedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_detalle")
-    private Integer idDetalle;
+    @Column(name = "id_detalle_pedido") // ← CAMBIAR DE "id_detalle"
+    private Integer idDetallePedido; // ← CAMBIAR NOMBRE
 
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
@@ -19,8 +19,14 @@ public class DetallePedido {
     @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
-    @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
+    @Column(name = "subtotal", nullable = false, precision = 12, scale = 2)
     private BigDecimal subtotal;
+
+    @Column(name = "comision_plataforma", nullable = false, precision = 10, scale = 2)
+    private BigDecimal comisionPlataforma; // ← AGREGAR CAMPO
+
+    @Column(name = "ganancia_vendedor", nullable = false, precision = 12, scale = 2)
+    private BigDecimal gananciaVendedor; // ← AGREGAR CAMPO
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pedido", nullable = false)
@@ -29,4 +35,8 @@ public class DetallePedido {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_producto", nullable = false)
     private Producto producto;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_vendedor", nullable = false)
+    private Usuario vendedor;
 }
