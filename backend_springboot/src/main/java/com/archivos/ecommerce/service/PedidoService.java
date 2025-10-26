@@ -40,7 +40,6 @@ public class PedidoService {
             .collect(Collectors.toList());
     }
 
-    // Método para convertir Entity a DTO
     private PedidoDTO convertirADTO(Pedido pedido) {
         List<DetallePedidoDTO> detalles = detallePedidoRepository.findByPedido_IdPedido(pedido.getIdPedido())
             .stream()
@@ -61,7 +60,6 @@ public class PedidoService {
         );
     }
 
-    // Método para convertir DetallePedido Entity a DTO
     private DetallePedidoDTO convertirDetalleADTO(DetallePedido detalle) {
         return new DetallePedidoDTO(
             detalle.getIdDetalle(),
