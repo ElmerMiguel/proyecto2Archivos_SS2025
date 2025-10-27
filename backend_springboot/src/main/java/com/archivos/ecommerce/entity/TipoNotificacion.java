@@ -12,12 +12,13 @@ public class TipoNotificacion {
     @Column(name = "id_tipo_notificacion")
     private Integer idTipoNotificacion;
 
-    @Column(name = "nombre_tipo", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "nombre_tipo", nullable = false)
     private NombreTipo nombreTipo;
 
     public enum NombreTipo {
-        PRODUCTO_APROBADO, PRODUCTO_RECHAZADO, PEDIDO_REALIZADO, 
-        PEDIDO_ENTREGADO, SANCION_APLICADA, SANCION_FINALIZADA
+        CAMBIO_ESTADO_PEDIDO,     // ← AGREGADO según DDL.sql
+        PRODUCTO_APROBADO,        // ← YA EXISTÍA
+        PRODUCTO_RECHAZADO        // ← YA EXISTÍA
     }
 }

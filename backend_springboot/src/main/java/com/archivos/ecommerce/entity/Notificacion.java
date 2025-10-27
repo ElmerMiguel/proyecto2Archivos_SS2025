@@ -13,20 +13,20 @@ public class Notificacion {
     @Column(name = "id_notificacion")
     private Integer idNotificacion;
 
-    @Column(name = "titulo", nullable = false, length = 200)
-    private String titulo;
+    @Column(name = "asunto", nullable = false, length = 200)
+    private String asunto;
 
     @Column(name = "mensaje", nullable = false)
     private String mensaje;
 
-    @Column(name = "leida", nullable = false)
-    private Boolean leida = false;
-
     @Column(name = "fecha_envio", nullable = false)
     private LocalDateTime fechaEnvio;
 
-    @Column(name = "fecha_lectura")
-    private LocalDateTime fechaLectura;
+    @Column(name = "enviado_exitosamente", nullable = false)
+    private Boolean enviadoExitosamente = true;
+
+    @Column(name = "id_referencia")
+    private Integer idReferencia;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
