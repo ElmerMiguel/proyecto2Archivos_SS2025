@@ -349,16 +349,15 @@ INSERT INTO calificaciones (id_producto, id_usuario, id_pedido, puntuacion, come
 (31, 12, 3, 5, 'Perfume original, muy contenta con la compra'),
 (33, 12, 3, 4, 'Buena cartera, el cuero se ve de calidad'),
 (38, 12, 3, 5, 'Excelente mochila, muy espaciosa');
-
 -- =====================================================
 -- 10. INSERCIÓN DE SANCIONES
 -- (Depende de: usuarios, estados_sancion)
 -- =====================================================
 
-INSERT INTO sanciones (id_usuario_sancionado, id_moderador, id_estado_sancion, motivo, fecha_inicio, fecha_fin, dias_suspension) VALUES
-(15, 2, 2, 'Producto prohibido publicado', CURRENT_TIMESTAMP - INTERVAL '30 days', CURRENT_TIMESTAMP - INTERVAL '20 days', 10),
-(17, 3, 2, 'Incumplimiento en tiempo de entrega', CURRENT_TIMESTAMP - INTERVAL '25 days', CURRENT_TIMESTAMP - INTERVAL '18 days', 7);
-
+INSERT INTO sanciones (id_usuario_sancionado, id_moderador, id_estado_sancion, motivo, descripcion, fecha_inicio, fecha_fin, dias_suspension) VALUES
+(15, 2, 2, 'Producto prohibido', 'Publicación de productos que violan las políticas de la plataforma', CURRENT_TIMESTAMP - INTERVAL '30 days', CURRENT_TIMESTAMP - INTERVAL '20 days', 10),
+(17, 3, 2, 'Incumplimiento de entrega', 'Retrasos constantes en la entrega de productos sin justificación válida', CURRENT_TIMESTAMP - INTERVAL '25 days', CURRENT_TIMESTAMP - INTERVAL '18 days', 7),
+(10, 2, 1, 'Comportamiento inadecuado', 'Comentarios ofensivos y lenguaje inapropiado en calificaciones de productos', CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP + INTERVAL '2 days', 7);
 -- =====================================================
 -- 11. INSERCIÓN DE NOTIFICACIONES
 -- (Depende de: usuarios, tipos_notificacion)

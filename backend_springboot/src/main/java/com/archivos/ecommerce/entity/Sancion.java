@@ -25,6 +25,9 @@ public class Sancion {
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
+    @Column(name = "dias_suspension")
+    private Integer diasSuspension;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario_sancionado", nullable = false)
     private Usuario usuarioSancionado;

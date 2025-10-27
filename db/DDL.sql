@@ -248,6 +248,7 @@ CREATE TABLE sanciones (
     id_moderador INTEGER NOT NULL,
     id_estado_sancion INTEGER NOT NULL,
     motivo TEXT NOT NULL,
+    descripcion TEXT,
     fecha_inicio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_fin TIMESTAMP,
     dias_suspension INTEGER,
