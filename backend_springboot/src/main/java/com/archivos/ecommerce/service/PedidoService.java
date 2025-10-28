@@ -189,4 +189,40 @@ public class PedidoService {
     public List<Map<String, Object>> getVentasMensualesPorAno(int year) {
         return pedidoRepository.getVentasMensualesPorAno(year);
     }
+
+
+
+    public List<PedidoDTO> listarPedidosEnCurso() {
+        return pedidoRepository.findByEstadoPedido_IdEstadoPedido(1)
+            .stream()
+            .map(this::convertirADTO)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PedidoDTO marcarComoEntregado(Integer idPedido) {
+        Pedido pedido = pedidoRepository.findById(idPedido)
+            .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+
+        EstadoPedido estadoEntregado = estadoPedidoRepository.findById(2)
+            .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+
+        pedido.setEstadoPedido(estadoEntregado);
+        pedido.setFechaEntregaReal(LocalDateTime.now());
+
+        Pedido pedidoGuardado = pedidoRepository.save(pedido);
+        return convertirADTO(pedidoGuardado);
+    }
+
+    @Transactional
+    public PedidoDTO modificarFechaEntrega(Integer idPedido, LocalDate nuevaFecha) {
+        Pedido pedido = pedidoRepository.findById(idPedido)
+            .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+
+        pedido.setFechaEntregaEstimada(nuevaFecha);
+        Pedido pedidoGuardado = pedidoRepository.save(pedido);
+        return convertirADTO(pedidoGuardado);
+    }
+
+
 }

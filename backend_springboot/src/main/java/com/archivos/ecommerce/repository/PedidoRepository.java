@@ -84,4 +84,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
         ORDER BY mes
         """, nativeQuery = true)
     List<Map<String, Object>> getVentasMensualesPorAno(@Param("year") int year);
+
+     List<Pedido> findByEstadoPedido_IdEstadoPedido(Integer idEstado);
 }
