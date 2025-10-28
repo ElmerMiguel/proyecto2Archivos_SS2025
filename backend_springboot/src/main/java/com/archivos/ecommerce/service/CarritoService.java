@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
 public class CarritoService {
 
@@ -69,16 +68,14 @@ public class CarritoService {
 
         ItemCarrito item;
         if (itemExistente.isPresent()) {
-            // Actualizar cantidad
             item = itemExistente.get();
             item.setCantidad(item.getCantidad() + cantidad);
         } else {
-            // Crear nuevo item
             item = new ItemCarrito();
             item.setCarrito(carrito);
             item.setProducto(producto);
             item.setCantidad(cantidad);
-            item.setPrecioUnitario(producto.getPrecio()); 
+            item.setPrecioUnitario(producto.getPrecio());
             item.setFechaAgregado(LocalDateTime.now());
         }
 
@@ -115,6 +112,16 @@ public class CarritoService {
         carritoRepository.save(carrito);
     }
 
+    @Transactional
+    public void vaciarCarrito(Integer idUsuario) {
+        Optional<Carrito> carrito = carritoRepository.findByUsuario_IdUsuario(idUsuario);
+        if (carrito.isPresent()) {
+            itemCarritoRepository.deleteByCarrito_IdCarrito(carrito.get().getIdCarrito());
+            carrito.get().setFechaUltimaActualizacion(LocalDateTime.now());
+            carritoRepository.save(carrito.get());
+        }
+    }
+
     private CarritoDTO convertirADTO(Carrito carrito) {
         List<ItemCarritoDTO> items = obtenerItemsDelCarrito(carrito.getIdCarrito());
 
@@ -140,16 +147,4 @@ public class CarritoService {
                 item.getProducto().getPrecio(),
                 subtotal);
     }
-
-@Transactional 
-public void limpiarCarrito(Integer idUsuario) {
-    Optional<Carrito> carrito = carritoRepository.findByUsuario_IdUsuario(idUsuario);
-    if (carrito.isPresent()) {
-        itemCarritoRepository.deleteByCarrito_IdCarrito(carrito.get().getIdCarrito());
-        carrito.get().setFechaUltimaActualizacion(LocalDateTime.now());
-        carritoRepository.save(carrito.get());
-    }
-}
-
-
 }

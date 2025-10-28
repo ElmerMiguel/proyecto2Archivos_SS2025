@@ -26,7 +26,6 @@ public class CarritoController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // NUEVO: Obtener carrito del usuario autenticado
     @GetMapping("/mis-items")
     @PreAuthorize("hasRole('COMUN')")
     public ResponseEntity<?> obtenerMiCarrito(Authentication authentication) {
@@ -51,7 +50,6 @@ public class CarritoController {
         }
     }
 
-    // Obtener carrito por usuario (uso interno o administrativo)
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<?> obtenerCarritoPorUsuario(@PathVariable Integer idUsuario) {
         return carritoService.obtenerCarritoPorUsuario(idUsuario)
@@ -59,14 +57,12 @@ public class CarritoController {
             .orElse(ResponseEntity.notFound().build());
     }
 
-    // Obtener ítems del carrito
     @GetMapping("/{idCarrito}/items")
     public ResponseEntity<List<ItemCarritoDTO>> obtenerItemsDelCarrito(@PathVariable Integer idCarrito) {
         List<ItemCarritoDTO> items = carritoService.obtenerItemsDelCarrito(idCarrito);
         return ResponseEntity.ok(items);
     }
 
-    // MODIFICADO: Agregar producto al carrito del usuario autenticado
     @PostMapping("/agregar")
     @PreAuthorize("hasRole('COMUN')")
     public ResponseEntity<?> agregarProductoAlCarrito(@RequestParam Integer idProducto,
@@ -84,7 +80,6 @@ public class CarritoController {
         }
     }
 
-    // Actualizar cantidad de un ítem
     @PutMapping("/item/{idItem}")
     public ResponseEntity<?> actualizarCantidadItem(@PathVariable Integer idItem,
                                                     @RequestParam Integer cantidad) {
@@ -96,7 +91,6 @@ public class CarritoController {
         }
     }
 
-    // Eliminar ítem del carrito
     @DeleteMapping("/item/{idItem}")
     public ResponseEntity<?> eliminarItemDelCarrito(@PathVariable Integer idItem) {
         try {
@@ -107,7 +101,21 @@ public class CarritoController {
         }
     }
 
-    // Endpoint de prueba
+    @DeleteMapping("/vaciar")
+    @PreAuthorize("hasRole('COMUN')")
+    public ResponseEntity<?> vaciarCarrito(Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Usuario usuario = usuarioService.obtenerEntidadPorEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            carritoService.vaciarCarrito(usuario.getIdUsuario());
+            return ResponseEntity.ok(Map.of("message", "Carrito vaciado exitosamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/test")
     public ResponseEntity<?> test() {
         return ResponseEntity.ok(Map.of("message", "Carrito controller funcionando"));

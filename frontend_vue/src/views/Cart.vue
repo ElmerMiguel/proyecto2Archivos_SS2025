@@ -18,10 +18,20 @@
       <div class="row">
         <div class="col-md-8">
           <div class="card">
-            <div class="card-header">
-              <h5>Productos en tu carrito</h5>
-            </div>
             <div class="card-body">
+              <!-- AGREGAR BOTÓN VACIAR -->
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Productos en tu carrito</h5>
+                <!-- El botón abre la modal de confirmación -->
+                <button 
+                  class="btn btn-outline-danger btn-sm" 
+                  @click="showConfirmModal = true"
+                  :disabled="!carrito?.items?.length"
+                >
+                  🗑️ Vaciar Carrito
+                </button>
+              </div>
+              
               <div v-for="item in carrito.items" :key="item.idItemCarrito" class="row align-items-center border-bottom py-3">
                 <div class="col-md-6">
                   <h6>{{ item.producto?.nombreProducto }}</h6>
@@ -70,6 +80,26 @@
         </div>
       </div>
     </div>
+
+    <!-- MODAL DE CONFIRMACIÓN CUSTOM (Reemplazo de confirm()) -->
+    <div v-if="showConfirmModal" class="modal show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">⚠️ Confirmación</h5>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres **vaciar completamente** el carrito?</p>
+            <p class="text-danger">Esta acción no se puede deshacer.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="showConfirmModal = false">Cancelar</button>
+            <button type="button" class="btn btn-danger" @click="vaciarTodo">Sí, Vaciar Carrito</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -79,7 +109,8 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      loading: true
+      loading: true,
+      showConfirmModal: false 
     }
   },
   computed: {
@@ -112,7 +143,7 @@ export default {
           cantidad: item.cantidad
         })
       } catch (e) {
-        alert('Error actualizando cantidad')
+        console.error('Error actualizando cantidad:', e)
       }
     },
     async eliminarItem(idItem) {
@@ -120,8 +151,16 @@ export default {
         try {
           await this.$store.dispatch('eliminarDelCarrito', idItem)
         } catch (e) {
-          alert('Error eliminando producto')
+          console.error('Error eliminando producto:', e)
         }
+      }
+    },
+    async vaciarTodo() {
+      this.showConfirmModal = false // Cerrar la modal
+      try {
+        await this.$store.dispatch('vaciarCarrito')
+      } catch (e) {
+        console.error('Error vaciando carrito:', e)
       }
     },
     procederPago() {

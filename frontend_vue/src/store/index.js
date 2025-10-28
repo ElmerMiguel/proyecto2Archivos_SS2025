@@ -89,6 +89,17 @@ const store = createStore({
         console.error('Error eliminando del carrito:', e)
         throw e
       }
+    },
+    // NUEVO: Vaciar carrito completo
+    async vaciarCarrito({ commit }) {
+      try {
+        await cartService.vaciarCarrito()
+        commit('setCarrito', { items: [], total: 0 })
+        return true
+      } catch (e) {
+        console.error('Error vaciando carrito:', e)
+        throw e
+      }
     }
   },
   getters: {

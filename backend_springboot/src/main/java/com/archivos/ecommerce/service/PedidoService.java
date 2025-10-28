@@ -118,7 +118,8 @@ public class PedidoService {
             detallePedidoRepository.save(detalle);
         }
 
-        carritoService.limpiarCarrito(idUsuario);
+       carritoService.vaciarCarrito(idUsuario);
+
 
         return convertirADTO(pedidoGuardado);
     }
