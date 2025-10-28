@@ -7,6 +7,7 @@ import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -15,12 +16,15 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
 
     // Se recomienda usar una clave secreta base64 larga y fija (no regenerarla cada vez)
-    // generar secret key base 64 en termina: "openssl rand -base64 64"
+    // generar secret key base 64 en terminal: "openssl rand -base64 64"
     private static final String SECRET_KEY = "GvBZd5mqCdcWc4Tq/63Qu9uYxsDZAyJ1pDyzBm0+50QmmrsOTmtGstB2hSNAGzG2tAevQP4vDReYNrDo2ATrIA==";
     private final SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
 
     private final long expiration = 86400000; // 24 horas
 
+    /**
+     * Genera un token JWT con el email y rol del usuario
+     */
     public String generateToken(String email, String rol) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + expiration);
@@ -34,6 +38,9 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Extrae el email del token JWT
+     */
     public String getEmailFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
@@ -43,6 +50,23 @@ public class JwtService {
                 .getSubject();
     }
 
+    /**
+     * Extrae el rol del token JWT
+     * NUEVO MÉTODO: Permite obtener el rol almacenado en el token
+     */
+    public String getRolFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        
+        return claims.get("rol", String.class);
+    }
+
+    /**
+     * Valida si el token es válido (firma correcta y no expirado)
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser()

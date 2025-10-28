@@ -31,10 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             
             if (jwtService.validateToken(token)) {
                 String email = jwtService.getEmailFromToken(token);
+                String rol = jwtService.getRolFromToken(token); // CAMBIO CRÍTICO: Extraer rol del token
                 
-                // Crear autenticación
+                // Crear autenticación con el ROL real del usuario (no hardcodeado)
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    email, null, Collections.singletonList(new SimpleGrantedAuthority("USER"))
+                    email, 
+                    null, 
+                    Collections.singletonList(new SimpleGrantedAuthority(rol)) // Usa el rol extraído del token
                 );
                 
                 SecurityContextHolder.getContext().setAuthentication(auth);

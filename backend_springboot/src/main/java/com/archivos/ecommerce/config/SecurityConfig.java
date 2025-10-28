@@ -1,5 +1,4 @@
 package com.archivos.ecommerce.config;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +27,36 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/test/**", "/api/categorias/**").permitAll()
-                .requestMatchers("/api/productos").permitAll()
-                .requestMatchers("/api/productos/{id}").permitAll()
+                // Rutas públicas (sin autenticación)
+                .requestMatchers("/api/auth/**", "/api/test/**").permitAll()
+                .requestMatchers("/api/categorias/**").permitAll()
+                .requestMatchers("/api/productos", "/api/productos/{id}").permitAll()
+                
+                // Rutas exclusivas para ADMINISTRADOR
+                .requestMatchers("/api/admin/**").hasAuthority("ADMINISTRADOR")
+                
+                // Rutas para MODERADOR y ADMINISTRADOR
+                .requestMatchers("/api/moderador/**").hasAnyAuthority("MODERADOR", "ADMINISTRADOR")
+                .requestMatchers("/api/solicitudes/**").hasAnyAuthority("MODERADOR", "ADMINISTRADOR")
+                
+                // Rutas para LOGISTICA y ADMINISTRADOR
+                .requestMatchers("/api/logistica/**").hasAnyAuthority("LOGISTICA", "ADMINISTRADOR")
+                .requestMatchers("/api/pedidos/gestionar/**").hasAnyAuthority("LOGISTICA", "ADMINISTRADOR")
+                
+                // Rutas para MODERADOR, LOGISTICA y ADMINISTRADOR
+                .requestMatchers("/api/sanciones/**").hasAnyAuthority("MODERADOR", "LOGISTICA", "ADMINISTRADOR")
+                
+                // Rutas para usuarios autenticados (todos los roles)
+                .requestMatchers("/api/usuarios/perfil").authenticated()
+                .requestMatchers("/api/carrito/**").authenticated()
+                .requestMatchers("/api/pedidos/**").authenticated()
+                .requestMatchers("/api/calificaciones/**").authenticated()
+                .requestMatchers("/api/notificaciones/**").authenticated()
+                .requestMatchers("/api/productos/crear").authenticated()
+                .requestMatchers("/api/productos/actualizar/**").authenticated()
+                .requestMatchers("/api/productos/eliminar/**").authenticated()
+                
+                // Todas las demás rutas requieren autenticación
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
