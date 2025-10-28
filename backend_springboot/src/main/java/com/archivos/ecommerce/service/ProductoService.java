@@ -16,8 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-// import java.util.stream.Collectors;
 import java.util.Map;
+import java.util.HashMap; // AGREGADO
+import java.util.ArrayList; // AGREGADO
 
 @Service
 public class ProductoService {
@@ -163,6 +164,89 @@ public class ProductoService {
     public boolean existeProducto(Integer id) {
         return productoRepository.existsById(id);
     }
+    
+    // --- MÉTODOS DE REPORTE AGREGADOS ---
+
+    /**
+     * Top productos más vendidos (SIMULADO CON DATOS EXISTENTES)
+     */
+    public List<Map<String, Object>> obtenerProductosMasVendidos(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        List<Map<String, Object>> resultado = new ArrayList<>();
+        
+        // OBTENER PRODUCTOS ACTIVOS (SIMULANDO VENTAS)
+        List<Producto> productos = productoRepository.findByActivoTrue();
+        
+        for (int i = 0; i < Math.min(10, productos.size()); i++) {
+            Producto producto = productos.get(i);
+            Map<String, Object> item = new HashMap<>();
+            
+            item.put("idProducto", producto.getIdProducto());
+            item.put("nombreProducto", producto.getNombreProducto());
+            item.put("descripcion", producto.getDescripcion());
+            item.put("nombreVendedor", producto.getVendedor().getNombreCompleto());
+            item.put("cantidadVendida", (int)(Math.random() * 100) + 1); // SIMULADO
+            item.put("totalVentas", producto.getPrecio().doubleValue() * ((int)(Math.random() * 100) + 1));
+            
+            resultado.add(item);
+        }
+        
+        return resultado;
+    }
+    
+    /**
+     * Top clientes más pedidos (SIMULADO)
+     */
+    public List<Map<String, Object>> obtenerClientesMasPedidos(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        List<Map<String, Object>> resultado = new ArrayList<>();
+        
+        // OBTENER USUARIOS COMUN
+        List<Usuario> usuarios = usuarioRepository.findByRol_NombreRol(
+            com.archivos.ecommerce.entity.Rol.NombreRol.COMUN
+        );
+        
+        for (int i = 0; i < Math.min(10, usuarios.size()); i++) {
+            Usuario usuario = usuarios.get(i);
+            Map<String, Object> item = new HashMap<>();
+            
+            item.put("idUsuario", usuario.getIdUsuario());
+            item.put("nombreCompleto", usuario.getNombreCompleto());
+            item.put("email", usuario.getEmail());
+            item.put("totalPedidos", (int)(Math.random() * 20) + 1); // SIMULADO
+            item.put("totalGastado", (Math.random() * 5000) + 100); // SIMULADO
+            
+            resultado.add(item);
+        }
+        
+        return resultado;
+    }
+    
+    /**
+     * Clientes con más ganancias (SIMULADO)
+     */
+    public List<Map<String, Object>> obtenerClientesMasGanancias(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        List<Map<String, Object>> resultado = new ArrayList<>();
+        
+        // OBTENER USUARIOS COMUN
+        List<Usuario> usuarios = usuarioRepository.findByRol_NombreRol(
+            com.archivos.ecommerce.entity.Rol.NombreRol.COMUN
+        );
+        
+        for (int i = 0; i < Math.min(10, usuarios.size()); i++) {
+            Usuario usuario = usuarios.get(i);
+            Map<String, Object> item = new HashMap<>();
+            
+            item.put("idUsuario", usuario.getIdUsuario());
+            item.put("nombreCompleto", usuario.getNombreCompleto());
+            item.put("email", usuario.getEmail());
+            item.put("totalGanancia", (Math.random() * 10000) + 500); // SIMULADO
+            
+            resultado.add(item);
+        }
+        
+        return resultado;
+    }
+    
+
 
 
     // Top 10 clientes más productos en venta

@@ -118,35 +118,18 @@ const store = createStore({
     carritoCount: state => state.carritoCount,
     carritoTotal: state => state.carrito?.total || 0,
     
-    userRole: state => {
-      const user = state.user
-      if (!user) return null
-      
-      return user.rol?.nombreRol || user.rol || user.nombreRol || user.role || user.roleName || null
-    },
-    
     _getRole: state => {
         const user = state.user
         if (!user) return null
-        return user.rol?.nombreRol || user.rol || user.nombreRol || user.role
+        return user.rol?.nombreRol || user.rol || user.nombreRol || user.role || user.roleName || null
     },
+    
+    userRole: (state, getters) => getters._getRole,
 
-    isComun: (state, getters) => {
-      const role = getters._getRole
-      return role === 'COMUN' || role === 'CLIENTE' || role === 'USER'
-    },
-    isAdmin: (state, getters) => {
-      const role = getters._getRole
-      return role === 'ADMINISTRADOR' || role === 'ADMIN'
-    },
-    isModerador: (state, getters) => {
-      const role = getters._getRole
-      return role === 'MODERADOR' || role === 'MODERATOR'
-    },
-    isLogistica: (state, getters) => {
-      const role = getters._getRole
-      return role === 'LOGISTICA' || role === 'LOGISTICS'
-    }
+    isAdmin: (state, getters) => getters.userRole === 'ADMINISTRADOR',
+    isModerador: (state, getters) => getters.userRole === 'MODERADOR',
+    isComun: (state, getters) => getters.userRole === 'COMUN',
+    isLogistica: (state, getters) => getters.userRole === 'LOGISTICA'
   }
 })
 
