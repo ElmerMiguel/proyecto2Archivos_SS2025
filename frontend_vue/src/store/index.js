@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import authService from '../services/authService'
 import cartService from '../services/cartService'
+import productService from '../services/productService'
 
 const store = createStore({
   state: {
@@ -15,11 +16,6 @@ const store = createStore({
       state.user = user
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(user))
-      
-      // DEBUG: Ver qué datos llegan y se guardan
-      console.log('🔍 Usuario guardado en store:', user)
-      // Nota: El rol se detecta mejor en el getter, pero aquí vemos la estructura
-      console.log('🔍 Posible estructura de Rol:', user?.rol)
     },
     clearAuth(state) {
       state.token = null
@@ -38,11 +34,7 @@ const store = createStore({
     async login({ commit, dispatch }, { email, password }) {
       const r = await authService.login(email, password)
       const token = r.data.token
-      // Se utiliza r.data.usuario, pero se añade r.data como fallback
       const user = r.data.usuario || r.data
-      
-      console.log('🔍 Respuesta completa del backend:', r.data)
-      console.log('🔍 Usuario extraído (puede ser r.data.usuario o r.data):', user)
       
       commit('setAuth', { token, user })
       await dispatch('loadCarrito')
@@ -71,7 +63,7 @@ const store = createStore({
     async agregarAlCarrito({ dispatch }, { idProducto, cantidad = 1 }) {
       try {
         await cartService.agregarItem(idProducto, cantidad)
-        await dispatch('loadCarrito') // Recargar carrito
+        await dispatch('loadCarrito')
         return true
       } catch (e) {
         console.error('Error agregando al carrito:', e)
@@ -101,11 +93,20 @@ const store = createStore({
     async vaciarCarrito({ commit }) {
       try {
         await cartService.vaciarCarrito()
-        // Establecer carrito vacío en el state
         commit('setCarrito', { items: [], total: 0 })
         return true
       } catch (e) {
         console.error('Error vaciando carrito:', e)
+        throw e
+      }
+    },
+    
+    async createProduct(context, productData) {
+      try {
+        const response = await productService.createProduct(productData)
+        return response
+      } catch (e) {
+        console.error('Error creando producto:', e)
         throw e
       }
     }
@@ -117,16 +118,13 @@ const store = createStore({
     carritoCount: state => state.carritoCount,
     carritoTotal: state => state.carrito?.total || 0,
     
-    // GETTERS DE ROLES CON MÁS OPCIONES
     userRole: state => {
       const user = state.user
       if (!user) return null
       
-      // Probar diferentes rutas para el nombre del rol: user.rol.nombreRol, user.rol, user.nombreRol, etc.
       return user.rol?.nombreRol || user.rol || user.nombreRol || user.role || user.roleName || null
     },
     
-    // Helper para obtener el rol, buscando en múltiples propiedades
     _getRole: state => {
         const user = state.user
         if (!user) return null
@@ -135,22 +133,18 @@ const store = createStore({
 
     isComun: (state, getters) => {
       const role = getters._getRole
-      console.log('🔍 Verificando isComun, rol:', role)
       return role === 'COMUN' || role === 'CLIENTE' || role === 'USER'
     },
     isAdmin: (state, getters) => {
       const role = getters._getRole
-      console.log('🔍 Verificando isAdmin, rol:', role)
       return role === 'ADMINISTRADOR' || role === 'ADMIN'
     },
     isModerador: (state, getters) => {
       const role = getters._getRole
-      console.log('🔍 Verificando isModerador, rol:', role)
       return role === 'MODERADOR' || role === 'MODERATOR'
     },
     isLogistica: (state, getters) => {
       const role = getters._getRole
-      console.log('🔍 Verificando isLogistica, rol:', role)
       return role === 'LOGISTICA' || role === 'LOGISTICS'
     }
   }

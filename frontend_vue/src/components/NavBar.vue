@@ -3,15 +3,6 @@
     <div class="container">
       <router-link class="navbar-brand" to="/">E-COMMERCE GT</router-link>
       
-      <!-- DEBUG INFO: Muestra los roles y estados booleanos actuales -->
-      <div v-if="isAuthenticated" class="small text-muted me-3">
-        **Rol:** {{ userRole || 'SIN_ROL' }} | 
-        <span :class="{'text-danger': isAdmin}">A: {{ isAdmin ? '✅' : '❌' }}</span> |
-        <span :class="{'text-warning': isModerador}">M: {{ isModerador ? '✅' : '❌' }}</span> |
-        <span :class="{'text-success': isLogistica}">L: {{ isLogistica ? '✅' : '❌' }}</span> |
-        <span :class="{'text-primary': isComun}">C: {{ isComun ? '✅' : '❌' }}</span>
-      </div>
-
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -103,7 +94,6 @@
 import { mapGetters } from 'vuex'
 export default {
   computed: {
-    // Es importante incluir 'carritoCount' aquí para que el carrito se renderice correctamente
     ...mapGetters(['isAuthenticated', 'user', 'carritoCount', 'userRole', 'isComun', 'isAdmin', 'isModerador', 'isLogistica'])
   },
   methods: {
