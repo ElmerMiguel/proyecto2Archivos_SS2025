@@ -5,6 +5,7 @@ import Register from '../views/Register.vue'
 import Products from '../views/Products.vue'
 import ProductDetail from '../views/ProductDetail.vue'
 import CreateProduct from '../views/CreateProduct.vue'
+import Cart from '../views/Cart.vue'
 import store from '../store'
 
 const routes = [
@@ -13,7 +14,8 @@ const routes = [
   { path: '/register', name: 'Register', component: Register, meta: { guest: true } },
   { path: '/productos', name: 'Products', component: Products },
   { path: '/producto/:id', name: 'ProductDetail', component: ProductDetail },
-  { path: '/crear-producto', name: 'CreateProduct', component: CreateProduct, meta: { requiresAuth: true } }
+  { path: '/crear-producto', name: 'CreateProduct', component: CreateProduct, meta: { requiresAuth: true } },
+  { path: '/carrito', name: 'Cart', component: Cart, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({

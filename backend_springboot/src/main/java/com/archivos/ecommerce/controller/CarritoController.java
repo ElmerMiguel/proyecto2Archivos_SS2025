@@ -1,23 +1,57 @@
 package com.archivos.ecommerce.controller;
 
+import com.archivos.ecommerce.dto.CarritoDTO;
 import com.archivos.ecommerce.dto.ItemCarritoDTO;
+import com.archivos.ecommerce.entity.Usuario;
 import com.archivos.ecommerce.service.CarritoService;
+import com.archivos.ecommerce.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8081"})
 @RestController
 @RequestMapping("/api/carrito")
-@CrossOrigin(origins = "http://localhost:3000")
 public class CarritoController {
 
     @Autowired
     private CarritoService carritoService;
 
-    // Obtener carrito por usuario
+    @Autowired
+    private UsuarioService usuarioService;
+
+    // NUEVO: Obtener carrito del usuario autenticado
+    @GetMapping("/mis-items")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<?> obtenerMiCarrito(Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Usuario usuario = usuarioService.obtenerEntidadPorEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            Optional<CarritoDTO> carrito = carritoService.obtenerCarritoPorUsuario(usuario.getIdUsuario());
+
+            if (carrito.isPresent()) {
+                return ResponseEntity.ok(carrito.get());
+            } else {
+                CarritoDTO carritoVacio = new CarritoDTO();
+                carritoVacio.setIdUsuario(usuario.getIdUsuario());
+                carritoVacio.setNombreUsuario(usuario.getNombreCompleto());
+                carritoVacio.setItems(List.of());
+                return ResponseEntity.ok(carritoVacio);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // Obtener carrito por usuario (uso interno o administrativo)
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<?> obtenerCarritoPorUsuario(@PathVariable Integer idUsuario) {
         return carritoService.obtenerCarritoPorUsuario(idUsuario)
@@ -32,13 +66,18 @@ public class CarritoController {
         return ResponseEntity.ok(items);
     }
 
-    // Agregar producto al carrito
+    // MODIFICADO: Agregar producto al carrito del usuario autenticado
     @PostMapping("/agregar")
-    public ResponseEntity<?> agregarProductoAlCarrito(@RequestParam Integer idUsuario,
-                                                      @RequestParam Integer idProducto,
-                                                      @RequestParam Integer cantidad) {
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<?> agregarProductoAlCarrito(@RequestParam Integer idProducto,
+                                                      @RequestParam Integer cantidad,
+                                                      Authentication authentication) {
         try {
-            ItemCarritoDTO item = carritoService.agregarProductoAlCarrito(idUsuario, idProducto, cantidad);
+            String email = authentication.getName();
+            Usuario usuario = usuarioService.obtenerEntidadPorEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            ItemCarritoDTO item = carritoService.agregarProductoAlCarrito(usuario.getIdUsuario(), idProducto, cantidad);
             return ResponseEntity.ok(item);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

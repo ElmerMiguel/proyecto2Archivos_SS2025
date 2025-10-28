@@ -26,8 +26,10 @@
           <button 
             v-if="isAuthenticated && producto.stock > 0" 
             class="btn btn-success btn-sm"
-            @click="agregarCarrito">
-            <i class="fas fa-cart-plus"></i>
+            @click="agregarCarrito"
+            :disabled="agregando">
+            <i v-if="agregando" class="fas fa-spinner fa-spin"></i>
+            <i v-else class="fas fa-cart-plus"></i>
           </button>
         </div>
       </div>
@@ -41,6 +43,11 @@ export default {
   props: {
     producto: { type: Object, required: true }
   },
+  data() {
+    return {
+      agregando: false
+    }
+  },
   computed: {
     ...mapGetters(['isAuthenticated'])
   },
@@ -48,8 +55,19 @@ export default {
     verDetalle() {
       this.$router.push({ name: 'ProductDetail', params: { id: this.producto.idProducto } })
     },
-    agregarCarrito() {
-      console.log('Agregar al carrito:', this.producto.idProducto)
+    async agregarCarrito() {
+      this.agregando = true
+      try {
+        await this.$store.dispatch('agregarAlCarrito', { 
+          idProducto: this.producto.idProducto, 
+          cantidad: 1 
+        })
+        this.$emit('producto-agregado', this.producto.nombreProducto)
+      } catch (e) {
+        alert('Error agregando al carrito')
+      } finally {
+        this.agregando = false
+      }
     },
     onImageError(event) {
       event.target.style.display = 'none'

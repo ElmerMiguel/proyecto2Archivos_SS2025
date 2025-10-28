@@ -19,19 +19,6 @@
             {{ categoria.nombreCategoria }} ({{ contarPorCategoria(categoria.idCategoria) }})
           </button>
         </div>
-        
-        <!-- DEBUG INFO -->
-        <div class="mt-3 small text-muted">
-          <strong>Debug:</strong><br>
-          Categoría seleccionada: {{ categoriaSeleccionada }}<br>
-          Total productos: {{ productos.length }}<br>
-          Productos filtrados: {{ productosFiltrados.length }}<br>
-          <div v-if="productos.length > 0">
-            <strong>Primer producto:</strong><br>
-            ID Categoría: {{ productos[0].idCategoria }}<br>
-            Nombre Categoría: {{ productos[0].nombreCategoria }}
-          </div>
-        </div>
       </div>
       
       <div class="col-md-9">
@@ -93,10 +80,9 @@ export default {
     ...mapGetters(['isAuthenticated']),
     productosFiltrados() {
       if (!this.categoriaSeleccionada) return this.productos
-      return this.productos.filter(p => {
-        // ProductoDTO usa idCategoria directamente, NO categoria.idCategoria
-        return Number(p.idCategoria) === Number(this.categoriaSeleccionada)
-      })
+      return this.productos.filter(p => 
+        Number(p.idCategoria) === Number(this.categoriaSeleccionada)
+      )
     }
   },
   async mounted() {
@@ -112,8 +98,6 @@ export default {
         ])
         this.productos = productosRes.data
         this.categorias = categoriasRes.data
-        console.log('Productos cargados:', this.productos)
-        console.log('Categorías cargadas:', this.categorias)
       } catch (e) {
         this.error = 'Error cargando productos'
         console.error(e)
@@ -123,7 +107,6 @@ export default {
     },
     filtrarCategoria(idCategoria) {
       this.categoriaSeleccionada = idCategoria
-      console.log('Filtrando por categoría:', idCategoria)
     },
     contarPorCategoria(idCategoria) {
       return this.productos.filter(p => 
