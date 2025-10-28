@@ -25,7 +25,12 @@
           <strong>Debug:</strong><br>
           Categoría seleccionada: {{ categoriaSeleccionada }}<br>
           Total productos: {{ productos.length }}<br>
-          Productos filtrados: {{ productosFiltrados.length }}
+          Productos filtrados: {{ productosFiltrados.length }}<br>
+          <div v-if="productos.length > 0">
+            <strong>Primer producto:</strong><br>
+            ID Categoría: {{ productos[0].idCategoria }}<br>
+            Nombre Categoría: {{ productos[0].nombreCategoria }}
+          </div>
         </div>
       </div>
       
@@ -89,8 +94,8 @@ export default {
     productosFiltrados() {
       if (!this.categoriaSeleccionada) return this.productos
       return this.productos.filter(p => {
-        const categoriaProducto = p.categoria?.idCategoria
-        return Number(categoriaProducto) === Number(this.categoriaSeleccionada)
+        // ProductoDTO usa idCategoria directamente, NO categoria.idCategoria
+        return Number(p.idCategoria) === Number(this.categoriaSeleccionada)
       })
     }
   },
@@ -122,7 +127,7 @@ export default {
     },
     contarPorCategoria(idCategoria) {
       return this.productos.filter(p => 
-        Number(p.categoria?.idCategoria) === Number(idCategoria)
+        Number(p.idCategoria) === Number(idCategoria)
       ).length
     }
   }

@@ -2,12 +2,18 @@ package com.archivos.ecommerce.controller;
 
 import com.archivos.ecommerce.dto.ProductoDTO;
 import com.archivos.ecommerce.service.ProductoService;
+import com.archivos.ecommerce.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.archivos.ecommerce.entity.Usuario;
+
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -16,6 +22,9 @@ public class ProductoController {
 
     @Autowired
     private ProductoService productoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     // Obtener productos activos
     @GetMapping
@@ -52,7 +61,7 @@ public class ProductoController {
         return ResponseEntity.ok(Map.of("message", "Producto controller funcionando"));
     }
 
-    // Crear nuevo producto
+    // Crear nuevo producto (sin autenticación)
     @PostMapping
     public ResponseEntity<?> crearProducto(@RequestBody ProductoDTO productoDTO,
                                            @RequestParam Integer idVendedor) {
@@ -62,6 +71,19 @@ public class ProductoController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    // Crear nuevo producto (autenticado)
+    @PostMapping("/nuevo")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<ProductoDTO> crearProductoAutenticado(@RequestBody ProductoDTO productoDTO, Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerEntidadPorEmail(email)
+    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+
+        ProductoDTO nuevoProducto = productoService.crearProducto(productoDTO, usuario.getIdUsuario());
+        return ResponseEntity.ok(nuevoProducto);
     }
 
     // Actualizar producto existente
@@ -85,5 +107,27 @@ public class ProductoController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    // Obtener productos por categoría
+    @GetMapping("/categoria/{idCategoria}")
+    public ResponseEntity<List<ProductoDTO>> obtenerProductosPorCategoria(@PathVariable Integer idCategoria) {
+        List<ProductoDTO> productos = productoService.listarProductosActivos()
+            .stream()
+            .filter(p -> p.getIdCategoria().equals(idCategoria))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(productos);
+    }
+
+    // Obtener productos del usuario autenticado
+    @GetMapping("/mis-productos")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<List<ProductoDTO>> obtenerMisProductos(Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerEntidadPorEmail(email)
+    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<ProductoDTO> productos = productoService.obtenerProductosPorVendedor(usuario.getIdUsuario());
+        return ResponseEntity.ok(productos);
     }
 }

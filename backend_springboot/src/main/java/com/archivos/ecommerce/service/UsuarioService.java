@@ -48,4 +48,8 @@ public class UsuarioService {
             usuario.getRol().getNombreRol().toString()
         );
     }
+    public Optional<Usuario> obtenerEntidadPorEmail(String email) {
+    return usuarioRepository.findByEmail(email);
+}
+
 }
