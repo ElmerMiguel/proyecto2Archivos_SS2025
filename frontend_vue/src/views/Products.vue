@@ -8,7 +8,7 @@
             class="list-group-item list-group-item-action"
             :class="{ active: categoriaSeleccionada === null }"
             @click="filtrarCategoria(null)">
-            Todas
+            Todas ({{ productos.length }})
           </button>
           <button 
             v-for="categoria in categorias" 
@@ -16,8 +16,16 @@
             class="list-group-item list-group-item-action"
             :class="{ active: categoriaSeleccionada === categoria.idCategoria }"
             @click="filtrarCategoria(categoria.idCategoria)">
-            {{ categoria.nombreCategoria }}
+            {{ categoria.nombreCategoria }} ({{ contarPorCategoria(categoria.idCategoria) }})
           </button>
+        </div>
+        
+        <!-- DEBUG INFO -->
+        <div class="mt-3 small text-muted">
+          <strong>Debug:</strong><br>
+          Categoría seleccionada: {{ categoriaSeleccionada }}<br>
+          Total productos: {{ productos.length }}<br>
+          Productos filtrados: {{ productosFiltrados.length }}
         </div>
       </div>
       
@@ -50,7 +58,7 @@
           
           <div v-if="productosFiltrados.length === 0" class="col-12">
             <div class="alert alert-info text-center">
-              No hay productos disponibles
+              No hay productos en esta categoría
             </div>
           </div>
         </div>
@@ -80,7 +88,10 @@ export default {
     ...mapGetters(['isAuthenticated']),
     productosFiltrados() {
       if (!this.categoriaSeleccionada) return this.productos
-      return this.productos.filter(p => p.categoria?.idCategoria === this.categoriaSeleccionada)
+      return this.productos.filter(p => {
+        const categoriaProducto = p.categoria?.idCategoria
+        return Number(categoriaProducto) === Number(this.categoriaSeleccionada)
+      })
     }
   },
   async mounted() {
@@ -96,6 +107,8 @@ export default {
         ])
         this.productos = productosRes.data
         this.categorias = categoriasRes.data
+        console.log('Productos cargados:', this.productos)
+        console.log('Categorías cargadas:', this.categorias)
       } catch (e) {
         this.error = 'Error cargando productos'
         console.error(e)
@@ -105,6 +118,12 @@ export default {
     },
     filtrarCategoria(idCategoria) {
       this.categoriaSeleccionada = idCategoria
+      console.log('Filtrando por categoría:', idCategoria)
+    },
+    contarPorCategoria(idCategoria) {
+      return this.productos.filter(p => 
+        Number(p.categoria?.idCategoria) === Number(idCategoria)
+      ).length
     }
   }
 }
