@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+// import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 public class ProductoService {
@@ -161,4 +163,33 @@ public class ProductoService {
     public boolean existeProducto(Integer id) {
         return productoRepository.existsById(id);
     }
+
+
+    // Top 10 clientes más productos en venta
+    public List<Map<String, Object>> getTop10ClientesMasProductosEnVenta() {
+        return productoRepository.findTop10ClientesMasProductosEnVenta();
+    }
+
+    // Listar productos pendientes
+    public List<ProductoDTO> listarProductosPendientes() {
+        return productoRepository.findByEstadoProducto_IdEstadoProducto(1)
+            .stream()
+            .map(this::convertirADTO)
+            .collect(Collectors.toList());
+    }
+
+    // Listar productos rechazados
+    public List<ProductoDTO> listarProductosRechazados() {
+        return productoRepository.findByEstadoProducto_IdEstadoProducto(3)
+            .stream()
+            .map(this::convertirADTO)
+            .collect(Collectors.toList());
+    }
+
+    // Productos por categoría
+    public List<Map<String, Object>> getProductosPorCategoria() {
+        return productoRepository.getProductosPorCategoria();
+    }
+
+    
 }

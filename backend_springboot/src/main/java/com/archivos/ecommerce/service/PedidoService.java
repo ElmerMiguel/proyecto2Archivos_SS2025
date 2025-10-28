@@ -25,7 +25,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class PedidoService {
@@ -51,7 +52,6 @@ public class PedidoService {
     @Autowired
     private TarjetaRepository tarjetaRepository;
 
-    // Listar todos los pedidos
     public List<PedidoDTO> listarTodosLosPedidos() {
         return pedidoRepository.findAll()
             .stream()
@@ -59,13 +59,11 @@ public class PedidoService {
             .collect(Collectors.toList());
     }
 
-    // Obtener pedido por ID
     public Optional<PedidoDTO> obtenerPedidoPorId(Integer id) {
         return pedidoRepository.findById(id)
             .map(this::convertirADTO);
     }
 
-    // Obtener pedidos por usuario
     public List<PedidoDTO> obtenerPedidosPorUsuario(Integer idUsuario) {
         return pedidoRepository.findByComprador_IdUsuario(idUsuario)
             .stream()
@@ -73,8 +71,7 @@ public class PedidoService {
             .collect(Collectors.toList());
     }
 
-    // Crear pedido desde el carrito con tarjeta
-     @Transactional
+    @Transactional
     public PedidoDTO crearPedidoDesdeCarrito(Integer idUsuario, Integer idTarjeta, String direccionEntrega) {
         CarritoDTO carritoDTO = carritoService.obtenerCarritoPorUsuario(idUsuario)
             .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
@@ -97,67 +94,61 @@ public class PedidoService {
         pedido.setTarjeta(tarjeta);
         pedido.setTotal(calcularTotalCarrito(carritoDTO.getItems()));
         pedido.setFechaPedido(LocalDateTime.now());
-         pedido.setFechaEntregaEstimada(LocalDate.now().plusDays(5));
+        pedido.setFechaEntregaEstimada(LocalDate.now().plusDays(5));
         pedido.setDireccionEntrega(direccionEntrega);
         pedido.setEstadoPedido(estadoPendiente);
 
         Pedido pedidoGuardado = pedidoRepository.save(pedido);
 
+        for (ItemCarritoDTO item : carritoDTO.getItems()) {
+            DetallePedido detalle = new DetallePedido();
+            detalle.setPedido(pedidoGuardado);
+            detalle.setProducto(productoRepository.findById(item.getIdProducto()).get());
+            detalle.setVendedor(detalle.getProducto().getVendedor());
+            detalle.setCantidad(item.getCantidad());
+            detalle.setPrecioUnitario(item.getPrecioUnitario());
+            detalle.setSubtotal(item.getSubtotal());
 
-for (ItemCarritoDTO item : carritoDTO.getItems()) {
-    DetallePedido detalle = new DetallePedido();
-    detalle.setPedido(pedidoGuardado);
-    detalle.setProducto(productoRepository.findById(item.getIdProducto()).get());
-    detalle.setVendedor(detalle.getProducto().getVendedor());
-    detalle.setCantidad(item.getCantidad());
-    detalle.setPrecioUnitario(item.getPrecioUnitario());
-    detalle.setSubtotal(item.getSubtotal());
-    
-    // Calcular comisión (5% del subtotal)
-    BigDecimal comision = item.getSubtotal().multiply(new BigDecimal("0.05"));
-    detalle.setComisionPlataforma(comision);
-    
-    // Calcular ganancia vendedor (subtotal - comisión)
-    BigDecimal ganancia = item.getSubtotal().subtract(comision);
-    detalle.setGananciaVendedor(ganancia);
+            BigDecimal comision = item.getSubtotal().multiply(new BigDecimal("0.05"));
+            detalle.setComisionPlataforma(comision);
 
-    detallePedidoRepository.save(detalle);
-}
+            BigDecimal ganancia = item.getSubtotal().subtract(comision);
+            detalle.setGananciaVendedor(ganancia);
+
+            detallePedidoRepository.save(detalle);
+        }
 
         carritoService.limpiarCarrito(idUsuario);
 
         return convertirADTO(pedidoGuardado);
     }
 
-    // Calcular total del carrito
     private BigDecimal calcularTotalCarrito(List<ItemCarritoDTO> items) {
         return items.stream()
             .map(ItemCarritoDTO::getSubtotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Convertir Pedido a DTO
     private PedidoDTO convertirADTO(Pedido pedido) {
         List<DetallePedidoDTO> detalles = detallePedidoRepository.findByPedido_IdPedido(pedido.getIdPedido())
             .stream()
             .map(this::convertirDetalleADTO)
             .collect(Collectors.toList());
 
-       return new PedidoDTO(
-        pedido.getIdPedido(),
-        pedido.getComprador().getIdUsuario(),
-        pedido.getComprador().getNombreCompleto(),
-        pedido.getTotal(),
-        pedido.getFechaPedido(),
-        pedido.getFechaEntregaEstimada().atStartOfDay(), 
-        pedido.getDireccionEntrega(),
-        pedido.getEstadoPedido().getIdEstadoPedido(),
-        pedido.getEstadoPedido().getNombreEstado().toString(),
-        detalles
-    );
+        return new PedidoDTO(
+            pedido.getIdPedido(),
+            pedido.getComprador().getIdUsuario(),
+            pedido.getComprador().getNombreCompleto(),
+            pedido.getTotal(),
+            pedido.getFechaPedido(),
+            pedido.getFechaEntregaEstimada().atStartOfDay(),
+            pedido.getDireccionEntrega(),
+            pedido.getEstadoPedido().getIdEstadoPedido(),
+            pedido.getEstadoPedido().getNombreEstado().toString(),
+            detalles
+        );
     }
 
-    // Convertir DetallePedido a DTO
     private DetallePedidoDTO convertirDetalleADTO(DetallePedido detalle) {
         return new DetallePedidoDTO(
             detalle.getIdDetallePedido(),
@@ -167,5 +158,35 @@ for (ItemCarritoDTO item : carritoDTO.getItems()) {
             detalle.getPrecioUnitario(),
             detalle.getSubtotal()
         );
+    }
+
+    public List<Map<String, Object>> getTop10ProductosMasVendidos(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return pedidoRepository.findTop10ProductosMasVendidos(fechaInicio, fechaFin);
+    }
+
+    public List<Map<String, Object>> getTop5ClientesMasGanancias(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return pedidoRepository.findTop5ClientesMasGanancias(fechaInicio, fechaFin);
+    }
+
+    public List<Map<String, Object>> getTop5ClientesMasProductosVendidos(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return pedidoRepository.findTop5ClientesMasProductosVendidos(fechaInicio, fechaFin);
+    }
+
+    public List<Map<String, Object>> getTop10ClientesMasPedidos(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return pedidoRepository.findTop10ClientesMasPedidos(fechaInicio, fechaFin);
+    }
+
+    public Map<String, Object> getDashboardAdmin() {
+        Map<String, Object> dashboard = new HashMap<>();
+        dashboard.put("totalPedidos", pedidoRepository.count());
+        dashboard.put("totalVentasHoy", pedidoRepository.getTotalVentasHoy());
+        dashboard.put("pedidosPendientes", pedidoRepository.countByEstadoPedido_IdEstadoPedido(1));
+        dashboard.put("pedidosEnCurso", pedidoRepository.countByEstadoPedido_IdEstadoPedido(2));
+        dashboard.put("pedidosEntregados", pedidoRepository.countByEstadoPedido_IdEstadoPedido(3));
+        return dashboard;
+    }
+
+    public List<Map<String, Object>> getVentasMensualesPorAno(int year) {
+        return pedidoRepository.getVentasMensualesPorAno(year);
     }
 }
