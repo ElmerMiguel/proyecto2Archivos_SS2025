@@ -18,7 +18,7 @@ public class Pedido {
     @Column(name = "fecha_pedido", nullable = false)
     private LocalDateTime fechaPedido;
 
-    @Column(name = "total", nullable = false, precision = 10, scale = 2)
+    @Column(name = "total", nullable = false, precision = 12, scale = 2)
     private BigDecimal total;
 
     @Column(name = "fecha_entrega_estimada", nullable = false)

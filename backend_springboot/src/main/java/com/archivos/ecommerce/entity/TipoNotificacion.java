@@ -17,8 +17,8 @@ public class TipoNotificacion {
     private NombreTipo nombreTipo;
 
     public enum NombreTipo {
-        CAMBIO_ESTADO_PEDIDO,     // ← AGREGADO según DDL.sql
-        PRODUCTO_APROBADO,        // ← YA EXISTÍA
-        PRODUCTO_RECHAZADO        // ← YA EXISTÍA
+        CAMBIO_ESTADO_PEDIDO,    
+        PRODUCTO_APROBADO,        
+        PRODUCTO_RECHAZADO        
     }
 }

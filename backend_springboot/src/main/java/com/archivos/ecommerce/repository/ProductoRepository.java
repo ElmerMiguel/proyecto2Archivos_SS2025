@@ -20,7 +20,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
     @Query(value = """
         SELECT u.nombre_completo, COUNT(p.id_producto) as total_productos
         FROM productos p
-        JOIN usuario u ON p.id_vendedor = u.id_usuario
+        JOIN usuarios u ON p.id_vendedor = u.id_usuario
         WHERE p.activo = true
         GROUP BY u.id_usuario, u.nombre_completo
         ORDER BY total_productos DESC

@@ -32,7 +32,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query(value = """
         SELECT u.nombre_completo, SUM(dp.ganancia_vendedor) as total_ganancias
         FROM detalle_pedido dp
-        JOIN usuario u ON dp.id_vendedor = u.id_usuario
+        JOIN usuarios u ON dp.id_vendedor = u.id_usuario
         JOIN pedidos pe ON dp.id_pedido = pe.id_pedido
         WHERE pe.fecha_pedido BETWEEN :fechaInicio AND :fechaFin
         GROUP BY u.id_usuario, u.nombre_completo
@@ -45,7 +45,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query(value = """
         SELECT u.nombre_completo, SUM(dp.cantidad) as total_productos_vendidos
         FROM detalle_pedido dp
-        JOIN usuario u ON dp.id_vendedor = u.id_usuario
+        JOIN usuarios u ON dp.id_vendedor = u.id_usuario
         JOIN pedidos pe ON dp.id_pedido = pe.id_pedido
         WHERE pe.fecha_pedido BETWEEN :fechaInicio AND :fechaFin
         GROUP BY u.id_usuario, u.nombre_completo
@@ -58,7 +58,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query(value = """
         SELECT u.nombre_completo, COUNT(p.id_pedido) as total_pedidos
         FROM pedidos p
-        JOIN usuario u ON p.id_comprador = u.id_usuario
+        JOIN usuarios u ON p.id_comprador = u.id_usuario
         WHERE p.fecha_pedido BETWEEN :fechaInicio AND :fechaFin
         GROUP BY u.id_usuario, u.nombre_completo
         ORDER BY total_pedidos DESC

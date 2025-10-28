@@ -16,7 +16,7 @@ public class Carrito {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @Column(name = "fecha_ultima_actualizacion")
+    @Column(name = "fecha_ultima_modificacion")
     private LocalDateTime fechaUltimaActualizacion;
 
     @OneToOne(fetch = FetchType.LAZY)
