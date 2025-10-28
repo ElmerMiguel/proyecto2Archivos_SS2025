@@ -28,7 +28,7 @@ public class CarritoController {
 
     // NUEVO: Obtener carrito del usuario autenticado
     @GetMapping("/mis-items")
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('COMUN')")
     public ResponseEntity<?> obtenerMiCarrito(Authentication authentication) {
         try {
             String email = authentication.getName();
@@ -68,7 +68,7 @@ public class CarritoController {
 
     // MODIFICADO: Agregar producto al carrito del usuario autenticado
     @PostMapping("/agregar")
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('COMUN')")
     public ResponseEntity<?> agregarProductoAlCarrito(@RequestParam Integer idProducto,
                                                       @RequestParam Integer cantidad,
                                                       Authentication authentication) {

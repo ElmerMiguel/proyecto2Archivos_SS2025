@@ -28,8 +28,8 @@
             class="btn btn-success btn-sm"
             @click="agregarCarrito"
             :disabled="agregando">
-            <i v-if="agregando" class="fas fa-spinner fa-spin"></i>
-            <i v-else class="fas fa-cart-plus"></i>
+            <span v-if="agregando">...</span>
+            <span v-else>🛒 +</span>
           </button>
         </div>
       </div>

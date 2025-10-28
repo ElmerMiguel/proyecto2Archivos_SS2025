@@ -6,11 +6,21 @@
         <ul class="navbar-nav me-auto">
           <li class="nav-item"><router-link class="nav-link" to="/">Home</router-link></li>
           <li class="nav-item"><router-link class="nav-link" to="/productos">Productos</router-link></li>
+
+          <!-- ADMIN ONLY -->
+          <li v-if="isAdmin" class="nav-item"><router-link class="nav-link" to="/admin">Admin</router-link></li>
+
+          <!-- MODERADOR ONLY -->
+          <li v-if="isModerador" class="nav-item"><router-link class="nav-link" to="/moderador">Moderador</router-link></li>
+
+          <!-- LOGISTICA ONLY -->
+          <li v-if="isLogistica" class="nav-item"><router-link class="nav-link" to="/logistica">Logística</router-link></li>
         </ul>
+
         <ul class="navbar-nav ms-auto">
           <li v-if="isAuthenticated" class="nav-item">
             <router-link class="nav-link position-relative" to="/carrito">
-              <i class="fas fa-shopping-cart"></i>
+              🛒 Carrito
               <span v-if="carritoCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{ carritoCount }}
               </span>
@@ -32,9 +42,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
 export default {
   computed: {
-    ...mapGetters(['isAuthenticated', 'user', 'carritoCount'])
+    ...mapGetters(['isAuthenticated', 'user', 'carritoCount']),
+    isAdmin() {
+      return this.user?.rol === 'ADMIN'
+    },
+    isModerador() {
+      return this.user?.rol === 'MODERADOR'
+    },
+    isLogistica() {
+      return this.user?.rol === 'LOGISTICA'
+    }
   },
   methods: {
     logout() {
