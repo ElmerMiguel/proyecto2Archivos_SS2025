@@ -1,10 +1,11 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="#">E-COMMERCE GT</a>
+      <router-link class="navbar-brand" to="/">E-COMMERCE GT</router-link>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
           <li class="nav-item"><router-link class="nav-link" to="/">Home</router-link></li>
+          <li class="nav-item"><router-link class="nav-link" to="/productos">Productos</router-link></li>
         </ul>
         <ul class="navbar-nav ms-auto">
           <li v-if="!isAuthenticated" class="nav-item"><router-link class="nav-link" to="/login">Login</router-link></li>
