@@ -1,0 +1,37 @@
+<template>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">E-COMMERCE GT</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><router-link class="nav-link" to="/">Home</router-link></li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li v-if="!isAuthenticated" class="nav-item"><router-link class="nav-link" to="/login">Login</router-link></li>
+          <li v-if="!isAuthenticated" class="nav-item"><router-link class="nav-link" to="/register">Register</router-link></li>
+          <li v-if="isAuthenticated" class="nav-item">
+            <span class="nav-link">{{ user?.nombreCompleto || user?.email }}</span>
+          </li>
+          <li v-if="isAuthenticated" class="nav-item">
+            <a class="nav-link" @click.prevent="logout" href="#">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+export default {
+  computed: {
+    ...mapGetters(['isAuthenticated', 'user'])
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
+      this.$router.push({ name: 'Login' })
+    }
+  }
+}
+</script>
