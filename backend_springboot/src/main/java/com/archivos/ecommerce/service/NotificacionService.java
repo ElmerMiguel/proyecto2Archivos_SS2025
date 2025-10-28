@@ -23,6 +23,12 @@ public class NotificacionService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private UsuarioService usuarioService;
+
     // Listar todas las notificaciones
     public List<NotificacionDTO> listarTodasLasNotificaciones() {
         return notificacionRepository.findAll()
@@ -76,6 +82,29 @@ public class NotificacionService {
         return convertirADTO(notificacionGuardada);
     }
 
+    // Crear notificación de cambio de estado de pedido y enviar email
+    public void crearNotificacionCambioEstadoPedido(Integer idUsuario, Integer idPedido, String mensaje) {
+        TipoNotificacion tipo = tipoNotificacionRepository.findByNombreTipo(TipoNotificacion.NombreTipo.CAMBIO_ESTADO_PEDIDO)
+            .orElseThrow(() -> new RuntimeException("Tipo de notificación no encontrado"));
+
+        // Crear notificación sin asunto explícito
+        Notificacion notificacion = new Notificacion();
+        notificacion.setAsunto("Actualización de Pedido");
+        notificacion.setMensaje(mensaje);
+        notificacion.setUsuario(usuarioRepository.findById(idUsuario)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado")));
+        notificacion.setTipoNotificacion(tipo);
+        notificacion.setIdReferencia(idPedido);
+        notificacion.setEnviadoExitosamente(true);
+        notificacion.setFechaEnvio(LocalDateTime.now());
+        notificacionRepository.save(notificacion);
+
+        // Enviar email
+        usuarioService.obtenerUsuarioPorId(idUsuario).ifPresent(usuario -> {
+            emailService.enviarNotificacionCambioEstado(usuario.getEmail(), usuario.getNombreCompleto(), idPedido, "ENTREGADO");
+        });
+    }
+
     // Eliminar notificación
     @Transactional
     public void eliminarNotificacion(Integer idNotificacion) {
@@ -85,14 +114,12 @@ public class NotificacionService {
         notificacionRepository.deleteById(idNotificacion);
     }
 
-    // Métodos para crear notificaciones automáticas del sistema
-
     // Notificación de pedido creado
-public void notificarPedidoCreado(Integer idUsuario, Integer idPedido, String total) {
-    String asunto = "Pedido Confirmado";
-    String mensaje = "Tu pedido #" + idPedido + " por Q" + total + " ha sido confirmado. Te mantendremos informado sobre el estado de tu entrega.";
-    crearNotificacion(asunto, mensaje, idUsuario, TipoNotificacion.NombreTipo.CAMBIO_ESTADO_PEDIDO, idPedido);
-}
+    public void notificarPedidoCreado(Integer idUsuario, Integer idPedido, String total) {
+        String asunto = "Pedido Confirmado";
+        String mensaje = "Tu pedido #" + idPedido + " por Q" + total + " ha sido confirmado. Te mantendremos informado sobre el estado de tu entrega.";
+        crearNotificacion(asunto, mensaje, idUsuario, TipoNotificacion.NombreTipo.CAMBIO_ESTADO_PEDIDO, idPedido);
+    }
 
     // Notificación de producto aprobado
     public void notificarProductoAprobado(Integer idVendedor, String nombreProducto, Integer idProducto) {
